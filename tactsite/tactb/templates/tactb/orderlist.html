@@ -1,0 +1,403 @@
+<style>
+   .ltmfont {
+      font-family: 'LT-TM-Annamalai';
+      font-weight: normal;
+      font-style: normal;
+      font-size: 24px;
+   }
+</style>
+<script>
+
+
+   function cloneRow() {
+      var rows = document.getElementById("rowsadded")
+      rows.value = Number(rows.value) + 1
+      var templtrow = document.getElementById("rowtemplate"); // find row to copy
+      var table = document.getElementById("orderTable"); // find table to append to
+      //var clone = row.cloneNode(true); // copy children too
+
+      //table.insertBefore(clone, table.children[1]); // add new row to end of table
+      //table.className = "table table-light table-striped g-0";
+
+      var clone = table.insertRow(1)
+      clone.id = "row_" + rows.value; // change id or other attributes/contents
+      clone.style.display = '';
+      for (i = templtrow.children.length - 1; i >= 0; i--) {
+         var cell1 = clone.insertCell(0)
+         var rowcontent = templtrow.children[i].innerHTML;
+
+         rowcontent = rowcontent.replaceAll("check_", "check_" + rows.value);
+         rowcontent = rowcontent.replaceAll("smbl_", "smbl_" + rows.value);
+         rowcontent = rowcontent.replaceAll("maxloss_", "maxloss_" + rows.value);
+         rowcontent = rowcontent.replaceAll("maxprofit_", "maxprofit_" + rows.value);
+         rowcontent = rowcontent.replaceAll("target_lsf_", "target_lsf_" + rows.value);
+         rowcontent = rowcontent.replaceAll("sl_lsf_", "sl_lsf_" + rows.value);
+         rowcontent = rowcontent.replaceAll("buy_sell_lsf_", "buy_sell_lsf_" + rows.value);
+         rowcontent = rowcontent.replaceAll("tsl_point_roi_", "tsl_point_roi_" + rows.value);
+         rowcontent = rowcontent.replaceAll("tsl_position_", "tsl_position_" + rows.value);
+         rowcontent = rowcontent.replaceAll("btn_m_", "btn_m_" + rows.value);
+         rowcontent = rowcontent.replaceAll("btn_ma_", "btn_ma_" + rows.value);
+         rowcontent = rowcontent.replaceAll("btn_mb_", "btn_mb_" + rows.value);
+         rowcontent = rowcontent.replaceAll("btn_sl_to_cst_", "btn_sl_to_cst_" + rows.value);
+         rowcontent = rowcontent.replaceAll("qnty_", "qnty_" + rows.value);
+         rowcontent = rowcontent.replaceAll("lb_", "lb_" + rows.value);
+         rowcontent = rowcontent.replaceAll("ls_", "ls_" + rows.value);
+         rowcontent = rowcontent.replaceAll("lt_", "lt_" + rows.value);
+         rowcontent = rowcontent.replaceAll("executed_price_", "executed_price_" + rows.value);
+         rowcontent = rowcontent.replaceAll("live_ltp_", "live_ltp_" + rows.value);
+         rowcontent = rowcontent.replaceAll("mtm_", "mtm_" + rows.value);
+         rowcontent = rowcontent.replaceAll("roi_", "roi_" + rows.value);
+         rowcontent = rowcontent.replaceAll("ent_ext_", "ent_ext_" + rows.value);
+
+         rowcontent = rowcontent.replaceAll("sel_instrument_", "sel_instrument_" + rows.value);
+         rowcontent = rowcontent.replaceAll("lotsize_", "lotsize_" + rows.value);
+         rowcontent = rowcontent.replaceAll("date_trans_", "date_trans_" + rows.value);
+         rowcontent = rowcontent.replaceAll("iol_", "iol_" + rows.value);
+         rowcontent = rowcontent.replaceAll("diff_", "diff_" + rows.value);
+         rowcontent = rowcontent.replaceAll("sel_buysell_", "sel_buysell_" + rows.value);
+         rowcontent = rowcontent.replaceAll("sel_misnrml_", "sel_misnrml_" + rows.value);
+         rowcontent = rowcontent.replaceAll("strkprice_", "strkprice_" + rows.value);
+
+
+
+         cell1.innerHTML = rowcontent;
+
+      }
+
+
+   }
+
+   function stockAction(acttype) {
+      if (acttype == 'dce' || acttype == 'dpe' || acttype == 'ce' || acttype == 'pe' || acttype == 'cepe') {
+         cloneRow()
+         var currrow = document.getElementById("rowsadded").value
+         obj = eval("document.all.sel_instrument_" + currrow);
+         obj.value = acttype;
+
+         obj = eval("document.all.lotsize_" + currrow);
+         obj.value = eval("document.all.lotsize").value;
+         eval("document.all.qnty_" + currrow).value = eval("document.all.lotsize").value;
+         eval("document.all.smbl_" + currrow).value = eval("document.all.lotsize").value;
+
+         obj = eval("document.all.iol_" + currrow);
+         obj.value = eval("document.all.iol").value;
+
+         obj = eval("document.all.diff_" + currrow);
+         obj.value = eval("document.all.diff").value;
+
+         obj = eval("document.all.sel_buysell_" + currrow);
+         obj.value = eval("document.all.sel_buysell").value;
+
+         obj = eval("document.all.sel_misnrml_" + currrow);
+         obj.value = eval("document.all.sel_misnrml").value;
+
+         obj = eval("document.all.strkprice_" + currrow);
+         obj.value = eval("document.all.strkprice").value;
+      }
+
+      if (acttype == 'mtm' || acttype == 'maxprofit' || acttype == 'maxloss' || acttype == 'roi' || acttype == 'sl') {
+         var currrow = document.getElementById("rowsadded").value
+         if (acttype == 'mtm') {
+            for (i = 1; i <= Number(currrow); i++) {
+               obj = eval("document.all.mtm_" + i);
+               obj.value = eval("document.all.mtm_btn").value;
+            }
+         }
+         if (acttype == 'maxprofit') {
+            for (i = 1; i <= Number(currrow); i++) {
+               obj = eval("document.all.maxprofit_" + i);
+               obj.value = eval("document.all.max_btn").value;
+            }
+         }
+         if (acttype == 'maxloss') {
+            for (i = 1; i <= Number(currrow); i++) {
+               obj = eval("document.all.maxloss_" + i);
+               obj.value = eval("document.all.loss_btn").value;
+            }
+         }
+         if (acttype == 'roi') {
+            for (i = 1; i <= Number(currrow); i++) {
+               obj = eval("document.all.roi_" + i);
+               obj.value = eval("document.all.roi_btn").value;
+            }
+         }
+         if (acttype == 'sl') {
+            for (i = 1; i <= Number(currrow); i++) {
+               obj = eval("document.all.sl_lsf_" + i);
+               obj.value = eval("document.all.sl_btn").value;
+            }
+         }
+      }
+      if (acttype == 'exitall' || acttype == 'exitallcall' || acttype == 'exitallput' || acttype == 'rentercall' || acttype == 'renterput' || acttype == 'paper' || acttype == 'live' || acttype == 'tslc' || acttype == 'tslcce' || acttype == 'tslcpe') {
+         if (confirm('You Want To Perform ' + acttype.toUpperCase() + ' on Selected Stocks?') == false) {
+            return;
+         }
+      }
+   }
+</script>
+<div class="col-md-12 g-0">
+   <div class="card shadow">
+      <div class="card-body">
+         <div class="row">
+            <table class="table table-striped table-sm table-light g-0">
+               <tr>
+                  <th>
+                     Index Stock
+                  </th>
+                  <th style="text-align:right">
+                     Lots
+                  </th>
+                  <th style="text-align:right">
+                     Expiry Date
+                  </th>
+                  <th style="text-align:right">
+                     IOF
+                  </th>
+                  <th style="text-align:right">
+                     DIFF
+                  </th>
+                  <th>
+                     Order Type
+                  </th>
+                  <th>
+                     MIS NRML
+                  </th>
+                  <th style="text-align:right">
+                     CE Strike Price
+                  </th>
+                  <th style="text-align:left">
+                     Action
+                  </th>
+                  <th style="text-align:left">
+                     Action
+                  </th>
+                  <th style="text-align:left">
+                     Action
+                  </th>
+                  <th style="text-align:left">
+                     Action
+                  </th>
+                  <th style="text-align:left">
+                     Action
+                  </th>
+                  <th>&nbsp;</th>
+               </tr>
+
+               <tr>
+                  <td>
+                     <Select id="sel_instrument" name="sel_instrument" class="form-control">
+                        {% for itm in tactUtils.orderOption %}
+                        <option value="{{itm.inskey}}" selected>{{itm.insdesc}}</option>
+                        {% endfor %}
+                     </Select>
+                  </td>
+                  <td style="text-align:right">
+                     <input id="lotsize" name="lotsize" type="number" step="1" style="text-align: right;" onblur=""
+                        class="form-control" value="1">
+                  </td>
+                  <td style="text-align:right">
+                     <input id="date_trans" name="date_trans" type="date" class="form-control" value="">
+                  </td>
+                  <td style="text-align:right">
+                     <input id="iol" name="iol" type="number" step="1" style="text-align: right;" onblur=""
+                        class="form-control" value="1">
+                  </td>
+                  <td style="text-align:right">
+                     <input id="diff" name="diff" type="number" step="1" style="text-align: right;" onblur=""
+                        class="form-control" value="1">
+                  </td>
+                  <td>
+                     <Select id="sel_buysell" name="sel_buysell" class="form-control">
+                        <option value=""></option>
+                        <option value="BUY" selected>BUY</option>
+                        <option value="SELL" selected>SELL</option>
+                     </Select>
+                  </td>
+                  <td>
+                     <Select id="sel_misnrml" name="sel_misnrml" class="form-control">
+                        <option value=""></option>
+                        <option value="MIS" selected>MIS</option>
+                        <option value="NRML" selected>NRML</option>
+                     </Select>
+                  </td>
+                  <td style="text-align:right">
+                     <input id="strkprice" size='6' name="strkprice" type="number" step="1" style="text-align: right;"
+                        onblur="" class="form-control" value="0">
+                  </td>
+                  <td style="text-align:left">
+                     <button type="button" style='width:100px' class="btn btn-success"
+                        onclick="stockAction('dce')">DCE</button>
+                  </td>
+                  <td style="text-align:left">
+                     <button type="button" style='width:100px' class="btn btn-warning"
+                        onclick="stockAction('dpe')">DPE</button>
+                  </td>
+                  <td style="text-align:left">
+                     <button type="button" style='width:100px' class="btn btn-success"
+                        onclick="stockAction('ce')">CE</button>
+                  </td>
+                  <td style="text-align:left">
+                     <button type="button" style='width:100px' class="btn btn-warning"
+                        onclick="stockAction('pe')">PE</button>
+                  </td>
+                  <td style="text-align:left">
+                     <button type="button" style='width:100px' class="btn btn-info"
+                        onclick="stockAction('cepe')">CE+PE</button>
+                  </td>
+                  <td>&nbsp;</td>
+               </tr>
+               <tr>
+                  <td colspan="13">
+                     <table>
+                        <tr style="height: 40px;">
+                           <td colspan="10" style="background: darkgreen;color:white;text-align: center;">
+                              <b>Actions</b>
+                           </td>
+                           <td style="background: darkolivegreen;color:white;text-align: center;">
+                              Option
+                           </td>
+                           <td style="background: maroon ;color:white;text-align: center;">
+                              LTP
+                           </td>
+                           <td style="background: blue;color:white;text-align: center;">
+                              Points
+                           </td>
+                           <td style="background: magenta;color:white;text-align: center;">
+                              TSL
+                           </td>
+                        </tr>
+                        <tr>
+                           <td>
+                              <button type="button" style='width:200px' class="btn btn-success"
+                                 onclick="stockAction('exitall')">EXIT ALL</button>
+                           </td>
+
+                           <td>
+                              <button type="button" style='width:200px' class="btn btn-success"
+                                 onclick="stockAction('exitallcall')">EXIT ALL CALLS</button>
+                           </td>
+                           <td>
+                              <button type="button" style='width:200px' class="btn btn-success"
+                                 onclick="stockAction('exitallput')">EXIT ALL PUTS</button>
+                           </td>
+
+                           <td>
+                              <button type="button" style='width:200px' class="btn btn-warning"
+                                 onclick="stockAction('rentercall')">REENTER ALL CALLS</button>
+                           </td>
+
+                           <td>
+                              <button type="button" style='width:200px' class="btn btn-warning"
+                                 onclick="stockAction('renterput')">REENTER ALL PUTS</button>
+                           </td>
+
+                           <td>
+                              <button type="button" style='width:200px' class="btn btn-info"
+                                 onclick="stockAction('paper')">PAPER TRADE</button>
+                           </td>
+
+                           <td>
+                              <button type="button" style='width:200px' class="btn btn-info"
+                                 onclick="stockAction('live')">LIVE TRADE</button>
+                           </td>
+                           <td>
+                              <button type="button" style='width:200px' class="btn btn-primary"
+                                 onclick="stockAction('tslc')">TSLC</button>
+                           </td>
+                           <td>
+                              <button type="button" style='width:200px' class="btn btn-primary"
+                                 onclick="stockAction('tslcce')">TSLC CE</button>
+                           </td>
+                           <td>
+                              <button type="button" style='width:200px' class="btn btn-primary"
+                                 onclick="stockAction('tslcpe')">TSLC PE</button>
+                           </td>
+                           <td>
+                              <Select id="sel_trial_fixed_liquid" name="sel_trial_fixed_liquid" class="form-control">
+                                 <option value="TRIAL" selected>TRIAL</option>
+                                 <option value="FIXED" selected>FIXED</option>
+                                 <option value="LIQUID" selected>LIQUID</option>
+                              </Select>
+
+                           </td>
+                           <td>
+                              <input id="ltp" size='6' name="ltp" type="number" step="1" style="text-align: right;"
+                                 onblur="" class="form-control" value="0">
+                           </td>
+                           <td>
+                              <input id="points" size='6' name="points" type="number" step="1"
+                                 style="text-align: right;" onblur="" class="form-control" value="0">
+                           </td>
+                           <td>
+                              <input id="tsl" size='6' name="tsl" type="number" step="1" style="text-align: right;"
+                                 onblur="" class="form-control" value="0">
+                           </td>
+                        </tr>
+                     </table>
+
+                  </td>
+               </tr>
+
+
+               <tr>
+                  <td colspan="13"></td>
+               </tr>
+
+               <tr>
+                  <td colspan="13">
+                     <table>
+
+                        <td>
+                           <input id="mtm_btn" size='6' name="mtm_btn" type="number" step="1" style="text-align: right;"
+                              onblur="" class="form-control" value="0">
+                        </td>
+                        <td>
+                           <button type="button" style='width:150px' class="btn btn-info"
+                              onclick="stockAction('mtm')">MTM</button>
+                        </td>
+
+                        <td>
+                           <input id="max_btn" size='6' name="max_btn" type="number" step="1" style="text-align: right;"
+                              onblur="" class="form-control" value="0">
+                        </td>
+                        <td>
+                           <button type="button" style='width:150px' class="btn btn-success"
+                              onclick="stockAction('maxprofit')">MAX
+                              PROFIT</button>
+                        </td>
+
+                        <td>
+                           <input id="loss_btn" size='6' name="loss_btn" type="number" step="1"
+                              style="text-align: right;" onblur="" class="form-control" value="0">
+                        </td>
+                        <td>
+                           <button type="button" style='width:150px' class="btn btn-danger"
+                              onclick="stockAction('maxloss')">MAX
+                              LOSS</button>
+                        </td>
+
+                        <td>
+                           <input id="roi_btn" size='6' name="roi_btn" type="number" step="1" style="text-align: right;"
+                              onblur="" class="form-control" value="0">
+                        </td>
+                        <td>
+                           <button type="button" style='width:150px' class="btn btn-warning"
+                              onclick="stockAction('roi')">ROI</button>
+                        </td>
+
+                        <td>
+                           <input id="sl_btn" size='6' name="sl_btn" type="number" step="1" style="text-align: right;"
+                              onblur="" class="form-control" value="0">
+                        </td>
+                        <td>
+                           <button type="button" style='width:150px' class="btn btn-secondary"
+                              onclick="stockAction('sl')">Stop Loss</button>
+                        </td>
+                     </table>
+                  </td>
+               </tr>
+            </table>
+         </div>
+      </div>
+   </div>
+</div>

@@ -1,0 +1,45 @@
+<div class="col-md-12">
+    <div class="card shadow">
+        <div class="card-header  {{tactUtils.themestring}}">
+            <div class="card-title">
+                <div class="row">
+                    <div class="col-md-6">
+                        <h5>Default Account</h5>
+                    </div>
+                    <div class="col-md-6">
+                        <a href="{% url 'master' rendertype %}" class="btn btn-warning">New</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="card-body">
+            <form method="POST" enctype="multipart/form-data" onsubmit="return handle_form_submission()">
+                {% csrf_token %}
+                <input type="hidden" name="items" id="items">
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="tranType">Transaction Type</label>
+                            <input id="tranType" name="tranType" required type="text" class="form-control" value="{{ormmodel.tranType}}">
+                        </div>
+                        <div class="form-group">
+                            <label for="accountCode">Default Account</label>
+                            <Select id="accountCode" name="accountCode" class="form-control">
+                                <option value=""></option>
+                                {% for act in ormcoa %}
+                                    {% if ormmodel.accountCode == act.accountCode %}
+                                        <option value="{{act.accountCode}}" selected>{{act.accountCode}}[{{act.accountName}}]</option>
+                                    {%else%}
+                                        <option value="{{act.accountCode}}">{{act.accountCode}}[{{act.accountName}}]</option>
+                                    {% endif %}
+                                {% endfor %}
+                            </Select>
+                        </div>
+                    </div>
+                </div>
+                
+                {% include 'tactb/buttons.html' %}
+            </form>
+        </div>
+    </div>
+</div>

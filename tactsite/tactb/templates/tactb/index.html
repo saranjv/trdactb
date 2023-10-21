@@ -1,0 +1,38 @@
+{% extends 'tactb/base.html'%}
+{% block body %}
+<div>
+    {% if user.is_authenticated %}
+        <div class="row g-0"  >
+            <div class="col-md-12 g-0">
+                <div class="row">
+                    {% with listname='Header' %}
+                        {% include 'tactb/headerlister.html' %}
+                    {% endwith %}
+                </div>
+                <div class="row">
+                    {% with listname='Order Placement' %}
+                        {% include 'tactb/orderlist.html' %}
+                    {% endwith %}
+                </div>
+                <div class="row">
+                    {% with listname='Placed Order' %}
+                        {% include 'tactb/orderplaced.html' %}
+                    {% endwith %}
+                </div>
+            </div>
+           
+        </div>
+    {%else%}
+        <div class="row">
+            <div class="col-md-3">
+                <div class="row">&nbsp;
+                </div>
+            </div>
+            <div class="col-md-6">&nbsp;
+            </div>
+            <div class="col-md-3">&nbsp;
+            </div>
+        </div>
+    {%endif%}
+</div>
+{% endblock %}

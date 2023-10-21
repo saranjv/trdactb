@@ -1,0 +1,37 @@
+{% extends 'tactb/base.html'%}
+{% block body %}
+{{rendertype}}
+<div class="row">
+    
+    <div class="col-md-6">
+        <div class="row">
+            {% if rendertype == 'compinfo'%}
+                {% include 'tactb/compinfo.html'%}
+            {% elif rendertype == 'finyears' %}
+                {% include 'tactb/finyear.html' %}
+            {% elif rendertype == 'modacces' %}
+                {% include 'tactb/modacces.html' %}
+            {% elif rendertype == 'compcoa' %}
+                {% include 'tactb/compcoa.html' %}
+            {% elif rendertype == 'custmaint' %}
+                {% include 'tactb/custmaint.html' %}
+            {% elif rendertype == 'subscription' %}
+                {% include 'tactb/subscription.html' %}
+            {% elif rendertype == 'autonum' %}
+                {% include 'tactb/autonum.html' %}
+            {% elif rendertype == 'defaultact' %}
+                {% include 'tactb/defaultact.html' %}
+            {% elif rendertype == 'reguser' %}
+                {% include 'users/register.html' %}
+           
+            
+            {% endif %}
+        </div>
+    </div>
+    <div class="col-md-6">
+        {% with listname='Company List' %}
+            {% include 'tactb/lister.html' %}
+        {% endwith %}
+    </div>
+</div>
+{% endblock %}

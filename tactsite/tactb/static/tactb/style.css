@@ -1,0 +1,14 @@
+body{
+    background-color:whitesmoke;
+    background-image: url('tact_bg.jpg');
+    background-repeat: no-repeat;
+    background-position: right top;
+    background-attachment: fixed;
+    background-size: cover;
+    font-family:Verdana, Geneva, Tahoma, sans-serif;
+    font-size: medium;
+}
+
+.table td, .table th { padding: 0; }
+
+

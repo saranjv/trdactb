@@ -1,0 +1,206 @@
+<style>
+   .ltmfont {
+      font-family: 'LT-TM-Annamalai';
+      font-weight: normal;
+      font-style: normal;
+      font-size: 24px;
+   }
+</style>
+<script>
+   function searchList() {
+      searchtxt = document.all.search_by.value
+      rcnt = 0
+      if (document.all.rowcounts != null) {
+         rcnt = Number(document.all.rowcounts.value)
+      }
+      for (i = 1; i <= rcnt; i++) {
+         curr_tr = eval('document.all.tr_' + i);
+         curr_tr.style.display = '';
+         foundstr = false;
+         if (curr_tr != null) {
+            tds = curr_tr.getElementsByTagName("td")
+
+            for (j = 0; j < tds.length; j++) {
+               currtext = tds[j].innerText
+               if (currtext.toLowerCase().indexOf(searchtxt.toLowerCase()) >= 0) {
+                  foundstr = true;
+                  break;
+               }
+            }
+         }
+         if (foundstr == false) {
+            curr_tr.style.display = 'none';
+         }
+      }
+   }
+</script>
+<div class="col-md-12 g-0">
+   <div class="card shadow">
+      <div class="card-body">
+         <div class="row">
+            <table name='orderTable' id='orderTable' class="table table-sm table-info table-striped g-0">
+               <tr>
+                  <th width="100">
+                     CALL
+                  </th>
+                  <th width="200">
+                     SYMBOL | QTY | EXP | IOF | MN | CE
+                  </th>
+                  <th width="200" style="text-align:right">
+                     Max Loss Amount ROI%
+                  </th>
+                  <th width="200" style="text-align:right">
+                     Max Profit Amount ROI%
+                  </th>
+                  <th width="200" style="text-align:right">
+                     Target LSF
+                  </th>
+                  <th width="200" style="text-align:right">
+                     SL LSF
+                  </th>
+                  <th width="200">
+                     BUY SELL LSF
+                  </th>
+                  <th width="200" style="text-align:right">
+                     TSL Points Price ROI%
+                  </th>
+                  <th width="200" style="text-align:right">
+                     TSL Position
+                  </th>
+                  <th width="200" style="text-align:right">
+                     Market Order M / MA / MB Position
+                  </th>
+                  <th width="200" style="text-align:right">
+                     SL To Cost
+                  </th>
+                  <th width="200" style="text-align:right">
+                     Qty +/-
+                  </th>
+                  <th width="200" style="text-align:right">
+                     LB
+                  </th>
+                  <th width="200" style="text-align:right">
+                     LS
+                  </th>
+                  <th width="200" style="text-align:right">
+                     LT
+                  </th>
+                  <th width="200" style="text-align:right">
+                     Executed Price
+                  </th>
+                  <th width="200" style="text-align:right">
+                     Live LTP
+                  </th>
+                  <th width="200" style="text-align:right">
+                     MTM
+                  </th>
+                  <th width="200" style="text-align:right">
+                     ROI %
+                  </th>
+                  <th width="200" style="text-align:right">
+                     Entry Time / Exit Time
+                  </th>
+                  <th><input type="hidden" id="rowsadded" name="rowsadded" value="0">&nbsp;</th>
+               </tr>
+
+               <tr id="rowtemplate" name="rowtemplate" style="display: none">
+                  <th>
+                     <input id="sel_instrument_" name="sel_instrument_" size='5' class="form-control" type="text" value="">
+                  </th>
+                  <th>
+                     <input id="smbl_" size='6' name="smbl_" type="text" onblur="" class="form-control" value="">
+                  </th>
+                  <th style="text-align:right">
+                     <input id="maxloss_" size='6' name="maxloss_" type="number" step="1" style="text-align: right;"
+                        onblur="" class="form-control" value="0">
+                  </th>
+                  <th style="text-align:right">
+                     <input id="maxprofit_" size='6' name="maxprofit_" type="number" step="1" style="text-align: right;"
+                        onblur="" class="form-control" value="0">
+                  </th>
+                  <th style="text-align:right">
+                     <input id="target_lsf_" size='6' name="target_lsf_" type="number" step="1"
+                        style="text-align: right;" onblur="" class="form-control" value="0">
+                  </th>
+                  <th style="text-align:right">
+                     <input id="sl_lsf_" size='6' name="sl_lsf_" type="number" step="1" style="text-align: right;"
+                        onblur="" class="form-control" value="0">
+                  </th>
+                  <th style="text-align:right">
+                     <input id="buy_sell_lsf_" size='6' name="buy_sell_lsf_" type="number" step="1"
+                        style="text-align: right;" onblur="" class="form-control" value="0">
+                  </th>
+                  <th style="text-align:right">
+                     <input id="tsl_point_roi_" size='6' name="tsl_point_roi_" type="number" step="1"
+                        style="text-align: right;" onblur="" class="form-control" value="0">
+                  </th>
+                  <th style="text-align:right">
+                     <input id="tsl_position_" size='6' name="tsl_position_" type="number" step="1"
+                        style="text-align: right;" onblur="" class="form-control" value="0">
+                  </th>
+                  <th style="text-align:center;width:120px;">
+                     <span id='btn_m_' class="badge rounded-pill bg-white text-primary"
+                        style="cursor:pointer;width:35px" onclick="searchList()">M</span>
+                     <span id='btn_ma_' class="badge rounded-pill bg-white text-danger"
+                        style="cursor:pointer;width:35px" onclick="searchList()">MA</span>
+                     <span id='btn_mb_' class="badge rounded-pill bg-white text-dark" style="cursor:pointer;width:35px"
+                        onclick="searchList()">MB</span>
+                  </th>
+                  <th style="text-align:center">
+                     <span id='btn_sl_to_cst_' class="badge rounded-pill bg-white text-primary"
+                        style="cursor:pointer;width:75px" onclick="searchList()">SLC</span>
+                  </th>
+                  <th style="text-align:right">
+                     <input id="qnty_" size='6' name="qnty_" type="number" step="1" style="text-align: right;" onblur=""
+                        class="form-control" value="0">
+                  </th>
+                  <th style="text-align:right">
+                     <input id="lb_" size='6' name="lb_" type="number" step="1" style="text-align: right;" onblur=""
+                        class="form-control" value="0">
+                  </th>
+                  <th style="text-align:right">
+                     <input id="ls_" size='6' name="ls_" type="number" step="1" style="text-align: right;" onblur=""
+                        class="form-control" value="0">
+                  </th>
+                  <th style="text-align:right">
+                     <input id="lt_" size='6' name="lt_" type="number" step="1" style="text-align: right;" onblur=""
+                        class="form-control" value="0">
+                  </th>
+                  <th style="text-align:right">
+                     <input id="executed_price_" size='6' name="executed_price_" type="number" step="1"
+                        style="text-align: right;" onblur="" class="form-control" value="0">
+                  </th>
+                  <th style="text-align:right">
+                     <input id="live_ltp_" size='6' name="live_ltp_" type="number" step="1" style="text-align: right;"
+                        onblur="" class="form-control" value="0">
+                  </th>
+                  <th style="text-align:right">
+                     <input id="mtm_" size='6' name="mtm_" type="number" step="1" style="text-align: right;" onblur=""
+                        class="form-control" value="0">
+                  </th>
+                  <th style="text-align:right">
+                     <input id="roi_" size='6' name="roi_" type="number" step="1" style="text-align: right;" onblur=""
+                        class="form-control" value="0">
+                  </th>
+                  <th style="text-align:right">
+                     <input id="ent_ext_" size='6' name="ent_ext_" type="number" step="1" style="text-align: right;"
+                        onblur="" class="form-control" value="">
+                  </th>
+                  <th>
+                     <div style="display:none">
+                        
+                        <input id="lotsize_" name="lotsize_" type="text" value="">
+                        <input id="date_trans_" name="date_trans_" type="text" value="">
+                        <input id="iol_" name="iol_" type="text" value="">
+                        <input id="diff_" name="diff_" type="text" value="">
+                        <input id="sel_buysell_" name="sel_buysell_" type="text" value="">
+                        <input id="sel_misnrml_" name="sel_misnrml_" type="text" value="">
+                        <input id="strkprice_" name="strkprice_" type="text" value="">
+                     </div>&nbsp;
+                  </th>
+               </tr>
+            </table>
+         </div>
+      </div>
+   </div>
+</div>

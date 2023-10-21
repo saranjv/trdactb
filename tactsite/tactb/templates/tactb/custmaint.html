@@ -1,0 +1,100 @@
+<div class="col-md-12">
+    <div class="card shadow">
+        <div class="card-header  {{tactUtils.themestring}}">
+            <div class="card-title">
+                <h5>Accounting Party Info</h5>
+            </div>
+        </div>
+        <div class="card-body">
+            <form method="POST" enctype="multipart/form-data" onsubmit="return handle_form_submission()">
+                {% csrf_token %}
+                <input type="hidden" name="items" id="items">
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="partyCode">Code</label>
+                            <input id="partyCode" name="partyCode" required type="text" class="form-control"
+                                value="{{ormmodel.partyCode}}">
+                        </div>
+                        <div class="form-group">
+                            <label for="partyName">Name</label>
+                            <input id="partyName" name="partyName" required type="text" class="form-control" value="{{ormmodel.partyName}}">
+                        </div>
+                        <div class="form-group">
+                            <label for="partyName2">Regional Name</label>
+                            <input id="partyName2" name="partyName2" type="text" class="form-control" value="{{ormmodel.partyName2}}">
+                        </div>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="partyAddress1">Address Line1</label>
+                        <input id="partyAddress1" name="partyAddress1" type="text" class="form-control"
+                            value="{{ormmodel.partyAddress1}}">
+                    </div>
+                    <div class="form-group">
+                        <label for="partyAddress2">Address Line2</label>
+                        <input id="partyAddress2" name="partyAddress2" type="text" class="form-control"
+                            value="{{ormmodel.partyAddress3}}">
+                    </div>
+
+                </div>
+
+                <div class="row">
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            <label for="partyCity">City</label>
+                            <input id="partyCity" name="partyCity" type="text" class="form-control" value="{{ormmodel.partyCity}}">
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="form-group>
+                            <label for="partyState">State</label>
+                            <input id="partyState" name="partyState" type="text" class="form-control"
+                                value="{{ormmodel.partyState}}">
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            <label for="partyCountry">Country</label>
+                            <input id="partyCountry" name="partyCountry" type="text" class="form-control"
+                                value="{{ormmodel.partyCountry}}">
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            <label for="partyZipcode">Postal Code</label>
+                            <input id="partyZipcode" name="partyZipcode" type="text" class="form-control"
+                                value="{{ormmodel.partyZipcode}}">
+                        </div>
+                    </div>
+
+                </div>
+                <div class="row">
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            <label for="partyTelephone">Telephone</label>
+                            <input id="partyTelephone" name="partyTelephone" required type="text" class="form-control"
+                                value="{{ormmodel.partyTelephone}}">
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            <label for="partyFax">Fax</label>
+                            <input id="partyFax" name="partyFax" type="text" class="form-control" value="{{ormmodel.partyFax}}">
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="partyEmail">Email</label>
+                            <input id="partyEmail" name="partyEmail" type="email" class="form-control"
+                                value="{{ormmodel.partyEmail}}">
+                        </div>
+                    </div>
+                </div>
+                
+                {% include 'tactb/buttons.html' %}
+            </form>
+        </div>
+    </div>
+</div>

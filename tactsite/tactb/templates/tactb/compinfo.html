@@ -1,0 +1,116 @@
+<div class="col-md-12">
+    <div class="card shadow">
+        <div class="card-header  {{tactUtils.themestring}}">
+            <div class="card-title">
+                <h5>Company Info</h5>
+            </div>
+        </div>
+        <div class="card-body">
+            <form method="POST" enctype="multipart/form-data" onsubmit="return handle_form_submission()">
+                {% csrf_token %}
+                <input type="hidden" name="items" id="items">
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="code">Code</label>
+                            <input id="code" name="code" type="text" class="form-control" readonly
+                                value="{{ormmodel.compCode}}">
+                        </div>
+                        <div class="form-group">
+                            <label for="name">Name</label>
+                            <input id="name" name="name" type="text" class="form-control" value="{{ormmodel.compName}}">
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="cleafix float-end">
+                            <img src="{{ormmodel.compLogo.url}}" width="100" height="100" style="border: 1px solid lightgrey;">
+                        </div>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="address1">Address Line1</label>
+                        <input id="address1" name="address1" type="text" class="form-control"
+                            value="{{ormmodel.compAddress1}}">
+                    </div>
+                    <div class="form-group">
+                        <label for="address2">Address Line2</label>
+                        <input id="address2" name="address2" type="text" class="form-control"
+                            value="{{ormmodel.compAddress2}}">
+                    </div>
+
+                </div>
+
+                <div class="row">
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            <label for="city">City</label>
+                            <input id="city" name="city" type="text" class="form-control" value="{{ormmodel.compCity}}">
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="form-group>
+                            <label for=" state">State</label>
+                            <input id="state" name="state" type="text" class="form-control"
+                                value="{{ormmodel.compState}}">
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            <label for="country">Country</label>
+                            <input id="country" name="country" type="text" class="form-control"
+                                value="{{ormmodel.compCountry}}">
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            <label for="zipcode">Postal Code</label>
+                            <input id="zipcode" name="zipcode" type="text" class="form-control"
+                                value="{{ormmodel.compZipcode}}">
+                        </div>
+                    </div>
+
+                </div>
+                <div class="row">
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            <label for="telephone">Telephone</label>
+                            <input id="telephone" name="telephone" type="text" class="form-control"
+                                value="{{ormmodel.compTelephone}}">
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            <label for="Fax">Fax</label>
+                            <input id="fax" name="fax" type="text" class="form-control" value="{{ormmodel.compFax}}">
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="email">Email</label>
+                            <input id="email" name="email" type="email" class="form-control"
+                                value="{{ormmodel.compEmail}}">
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            <label for="currency">Currency</label>
+                            <input id="currency" name="currency" type="text" class="form-control"
+                                value="{{ormmodel.compCurrency}}">
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="logo">Logo Current:{{ormmodel.compLogo}}</label>
+                            <input id="logo" name="logo" type="file" accept="image/*" class="form-control" value="{{ormmodel.compLogo.url}}">
+                        </div>
+                    </div>
+                    
+                </div>
+                {% include 'tactb/buttons.html' %}
+            </form>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,148 @@
+{% load static %}
+{% load humanize %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <link rel="stylesheet" href="{% static 'tactb/style.css' %}">
+    <script src="https://kit.fontawesome.com/7e5cca6e77.js" crossorigin="anonymous"></script>
+    <style>
+        body {
+            font-family: Verdana, Geneva, Tahoma, sans-serif;
+            color: #333333;
+            background-image: none;
+            margin-top: 50px;
+            margin-left: 50px;
+        }
+
+       .ltmfont {font-family: 'LT-TM-Annamalai';font-bold: normal; font-style: normal; font-size: 48px;}
+       .ltmfont2 {font-family: 'LT-TM-Annamalai';font-bold: normal; font-style: normal; font-size: 36px;}
+       .sep{border-bottom:1px dashed black}
+        table {
+            background-color: white;
+        }
+
+        .rpttitle {
+
+            font-size: 14;
+            font-weight: bold;
+            background-color: #666666;
+            border-radius: 5px;
+            color: white;
+            height: 40px;
+        }
+        .rptdtl {
+            font-family: Verdana, Geneva, Tahoma, sans-serif;
+            font-size: 9;
+            background-color: white;
+            height: 25px;
+        }
+    </style>
+    <script language="JavaScript">
+        function printThis() {
+            document.all.printer.style.display = 'none';
+            document.all.backto.style.display = 'none';
+            document.all.hdrTable.style.display = 'none';
+            window.print()
+            document.all.printer.style.display = '';
+            document.all.backto.style.display = '';
+            document.all.hdrTable.style.display = '';
+        }
+
+        function backto() {
+            window.close()
+        }
+
+        function setPage() {
+            if (subtype == 'print') {
+                document.all.tactForm.action = "{{rendertype}}/print"
+            }
+        }
+    </script>
+</head>
+<table {{ormHdr.tableconfig}}>
+    <tr id='hdrTable' style='display:' >
+        <td width="100%" style="text-align:right">
+            <font size="+3"><i id="printer" class="fa-solid fa-print" style='cursor:pointer'
+                    onClick="printThis(this)"></i></font>&nbsp;<font size="+3" color="red"><i id="backto"
+                    class="fa-regular fa-circle-xmark" style='cursor:pointer' onClick="backto(this)"></i></font>
+     </td>
+    </tr>
+</table>
+{% if ormHdr.noofrecords > 0 %}
+    <table {{ormHdr.tableconfig}} border="0" cellpadding="0" cellspacing="0">
+       <tr>
+            {% for ormModelDtl in ormDtlAll %}
+                <td>
+                    {%if not forloop.first  and not forloop.counter|divisibleby:2 %}
+                        </tr><tr><td>
+                    {% endif %}
+                   
+                    <table border="0" cellpadding="0" cellspacing="0" style="width:968px;background-image: url('../../images/membcard_bg.jpeg'); background-repeat: no-repeat; background-size:100%">
+                        <tr height="140" >
+                            <td width="290">&nbsp;</td><td width="340">&nbsp;</td><td>&nbsp;</td>
+                        </tr>
+                        <tr height="80" style="vertical-align: bottom;" class="ltmfont">
+                            <td>&nbsp;</td><td>&nbsp;</td><td>{{ormModelDtl.subsId}}&nbsp;</b></td>
+                        </tr>
+                        
+                        <tr  height="65" style="vertical-align: bottom;" class="ltmfont">
+                            <td>&nbsp;</td><td colspan="2">{{ormModelDtl.subsName}}&nbsp;</td>
+                        </tr>
+                        <tr  height="60" style="vertical-align: bottom;" class="ltmfont">
+                            <td>&nbsp;</td><td colspan="2">{% if ormModelDtl.subDOB|date:'d/m/Y' != '31/12/2099' %}{{ormModelDtl.subDOB|date:'d-m-Y'}}{%endif%}&nbsp;</td>
+                        </tr>
+                        <tr height="60" style="vertical-align: bottom;" class="ltmfont">
+                            <td>&nbsp;</td><td colspan="2">{% if ormModelDtl.subDOR|date:'d/m/Y' != '31/12/2099' %}{{ormModelDtl.subDOR|date:'d-m-Y'}}{%endif%}&nbsp;</td>
+                        </tr>
+                        <tr height="60" style="vertical-align: bottom;" class="ltmfont">
+                            <td>&nbsp;</td><td colspan="2">{{ormModelDtl.subPPOno}}&nbsp;</td>
+                        </tr>
+                        <tr  height="60" style="vertical-align: bottom;" class="ltmfont">
+                            <td>&nbsp;</td><td colspan="2">{{ormModelDtl.subBranch}}&nbsp;</td>
+                        </tr>
+                        <tr  height="50" style="vertical-align: bottom;" class="ltmfont2">
+                            <td>&nbsp;</td><td colspan="2">{{ormModelDtl.subAddr1}}&nbsp;{{ormModelDtl.subAddr2}}</td>
+                        </tr>
+                        <tr height="10">
+                            <td>&nbsp;</td><td colspan="2"><b>&nbsp;</b></td>
+                        </tr>
+                        
+                    </table>
+                    {%if  forloop.counter|divisibleby:10 %}
+                        <div id="samplebreak" style="page-break-after: always;"></div>
+                    {% endif %}
+                </td>
+                <td><div style="font-family:tamilfont">&nbsp;</div></td>
+            {% endfor %}
+        </tr>
+    </table>
+
+{% else %}
+    <table {{ormHdr.tableconfig}}>
+        <tr>
+            <td class="rptdtl" colspan="9" style="text-align:center">
+                <font color="maroon"> <b> No Transactions Found </b></font>
+            </td>
+        </tr>
+    </table>
+{% endif %}
+<script>
+    function setPageBreak() {
+        pageobj = document.all.samplebreak
+        currpageobj = document.all.currpage
+        currpagetotobj = document.all.currpagetot
+        if (currpageobj.length != null) {
+            for (i = 0; i < currpageobj.length; i++) {
+                currpageobj[i].innerHTML = i + 1
+                currpagetotobj[i].innerHTML = currpageobj.length
+            }
+        }
+        else {
+            currpageobj.innerHTML = 2
+            currpagetotobj.innerHTML = 2
+        }
+
+    }
+    setPageBreak()
+</script>

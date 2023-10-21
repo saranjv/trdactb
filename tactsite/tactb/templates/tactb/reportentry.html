@@ -1,0 +1,286 @@
+<style>
+    .ltmfont {font-family: 'LT-TM-Annamalai';font-weight: normal; font-style: normal; font-size: 24px;}
+</style>
+<script language="JavaScript">
+
+    function submitReport(subtype) {
+        document.all.tactForm.action = "{{rendertype}}"
+        document.all.tactForm.target = ''
+        if (subtype == 'print') {
+            document.all.tactForm.action = "{{rendertype}}/print"
+            document.all.tactForm.target = '_blank'
+        }
+        document.all.tactForm.submit()
+    }
+
+    function zoomCard(cardid)
+    {
+        
+        zoomurl = '{% url "reportszoom" "subscard" %}'
+        window.open(zoomurl+"?cardid="+cardid,'_blank')
+    }
+
+    function zoomReport(actcode)
+    {
+        
+        fromdate = document.all.date_trans_from.value
+        todate = document.all.date_trans_to.value;
+        zoomurl = '{% url "reportszoom" "tranenq" %}'
+        window.open(zoomurl+"?urlfromdate="+fromdate+"&urltodate="+todate+"&urlactcode="+actcode,'_blank')
+    }
+</script>
+<div class="col-md-12">
+    <div class="card shadow">
+        <div class="card-header  bg-secondary text-white">
+            <div class="card-title">
+                <h5>
+                    {{ reportDesc }}
+                </h5>
+            </div>
+        </div>
+        <div class="card-body">
+            <form name="tactForm" method="POST" enctype="multipart/form-data">
+                {% csrf_token %}
+                {% if rendertype != 'trialbal'%}
+                <div class="row">
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            <label for="search_by">Search By</label>
+                            {% if rendertype == 'subscard' %}
+                                <input style="font-family: 'LT-TM-Annamalai';font-weight: normal; font-style: normal; font-size: 24px;" id="search_by" name="search_by" type="text" class="form-control"
+                                value="{{ormHdr.search_by}}">
+                            {%else%}
+                            <input id="search_by" name="search_by" type="text" class="form-control"
+                                value="{{ormHdr.search_by}}">
+                            {%endif%}
+                        </div>
+                    </div>
+                    {% if rendertype != 'subscard'%}
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label for="hdrAccount">Account Code</label>
+                                <Select id="hdrAccount" name="hdrAccount" class="form-control">
+                                    <option value=""></option>
+                                    {% for act in ormHdr.ormcoa %}
+                                    {% if act.accountCode == ormHdr.hdrAccount %}
+                                    <option selected value="{{act.accountCode}}">{{act.accountCode}}[{{act.accountName}}]
+                                    </option>
+                                    {% else %}
+                                    <option value="{{act.accountCode}}">{{act.accountCode}}[{{act.accountName}}]</option>
+                                    {% endif %}
+                                    {% endfor %}
+                                </Select>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label for="party_code">Party Code</label>
+                                <Select id="party_code" name="party_code" class="form-control">
+                                    <option value=""></option>
+                                    {% for cust in ormHdr.ormCust %}
+                                    {% if cust.partyCode == ormHdr.party_code %}
+                                    <option value="{{cust.partyCode}}" selected>{{cust.partyCode}} [{{cust.partyName}}]
+                                    </option>
+                                    {% else %}
+                                    <option value="{{cust.partyCode}}">{{cust.partyCode}} [{{cust.partyName}}]</option>
+                                    {% endif %}
+                                    {% endfor %}
+                                </Select>
+                            </div>
+                        </div>
+                    {% endif %}
+                </div>
+                {% endif %}
+                
+                <div class="row">
+                    {% if rendertype != 'subscard'%}
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            <label for="date_trans_from">From Date</label>
+                            <input id="date_trans_from" name="date_trans_from" type="date" class="form-control"
+                                value="{{ormHdr.datefrom|date:'Y-m-d'}}">
+                            <input id="document_type" name="document_type" type="hidden" class="form-control" readonly
+                                value="{{rendertype|upper}}">
+                        </div>
+                    </div>
+
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            <label for="date_trans_to">To Date</label>
+                            <input id="date_trans_to" name="date_trans_to" type="date" class="form-control"
+                                value="{{ormHdr.dateto|date:'Y-m-d'}}">
+                        </div>
+                    </div>
+                    {% endif %}
+                    {% if ormHdr.opt != "zoom" %}
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label>&nbsp;</label><br />
+                                <button type="button" class="btn btn-success" onclick="submitReport('view')">Search
+                                    >>></button>&nbsp;<button type="button" class="btn btn-warning"
+                                    onclick="submitReport('print')">Print >>></button>
+                            </div>
+                        </div>
+                    {% endif %}
+                </div>
+               
+                <hr />
+
+                <div class="row">
+                    <div class="col-md-12">
+                        <table class="table table-striped table-light">
+                            {% if rendertype == 'trialbal'%}
+                            <tr>
+                                <th>&nbsp;</th>
+                                <th>Account</th>
+                                <th>Narration</th>
+                                <th style="text-align: right;">Debit Total</th>
+                                <th style="text-align: right;">Credit Total</th>
+                            </tr>
+                            {% elif rendertype == 'subscard'%}
+                            <tr>
+                                <th>&nbsp;</th>
+                                <th>ID</th>
+                                <th>பெயர்</th>
+                                <th>பிறந்த தேதி</th>
+                                <th>ஓய்வு பெற்ற தேதி</th>
+                                <th>P.P.O எண்</th>
+                                <th>கிளை</th>
+                            </tr>
+                            {%else%}
+                            <tr>
+                                <th>&nbsp;</th>
+                                <th>Date</th>
+                                <th>Document No</th>
+                                <th>Document Type</th>
+                                <th>Narration</th>
+                                <th>Account</th>
+                                <th>Party</th>
+                                <th>Reference</th>
+                                <th style="text-align:right">Amount</th>
+                            </tr>
+                            <tr>
+                                <td colspan="7">&nbsp;</td>
+                                <td><b>Opening Balance</b></td>
+                                <td style="text-align:right">
+                                    {% if ormHdr.opbal < 0 %} <font color="red">
+                                        {% else %}
+                                        <font color="green">
+                                            {% endif %}
+                                            {{ormHdr.opbal|floatformat:2}}
+                                        </font>
+                                </td>
+                            </tr>
+                            {% endif %}
+                            {% if ormHdr.noofrecords > 0 %}
+
+                            {% for ormModelDtl in ormDtlAll %}
+
+                            {% if rendertype == 'trialbal'%}
+                            <tr>
+                                <td>
+                                    {{forloop.counter}}
+                                </td>
+                                <td>
+                                    <button type="button" class="btn btn-dark"
+                                    onclick="zoomReport('{{ormModelDtl.account_code}}')">{{ormModelDtl.account_code}}</button>
+                                </td>
+                                <td>{{ormModelDtl.account_desc}}</td>
+                                <td style="text-align: right;">{{ormModelDtl.amount_db|floatformat:2}}</td>
+                                <td style="text-align: right;">{{ormModelDtl.amount_cr|floatformat:2}}</td>
+
+                            </tr>
+                            {%elif rendertype == 'subscard' %}
+                            <tr>
+                                <td>
+                                    {{forloop.counter}}
+                                </td>
+                                <td>
+                                    <a href="{% url 'masterrec' 'subscription'|lower ormModelDtl.id %}"
+                                        class="badge bg-dark text-white"
+                                        target="_blank">{{ormModelDtl.subsId}}</a>
+                                </td>
+                                <td class="ltmfont">{{ormModelDtl.subsName}}</td>
+                                <td class="ltmfont">{% if ormModelDtl.subDOB|date:'d/m/Y' != '31/12/2099' %}{{ormModelDtl.subDOB|date:'d/m/Y'}}{%endif%}</td>
+                                <td class="ltmfont">{% if ormModelDtl.subDOR|date:'d/m/Y' != '31/12/2099' %}{{ormModelDtl.subDOR|date:'d/m/Y'}}{%endif%}</td>
+                                <td class="ltmfont">{{ormModelDtl.subPPOno}}</td>
+                                <td class="ltmfont">{{ormModelDtl.subBranch}}</td>
+                            </tr>
+                            {% else %}
+                            <tr>
+                                <td>
+                                    {{forloop.counter}}
+                                </td>
+                                <td>
+                                    <a href="{% url 'transrec' ormModelDtl.document_type|lower ormModelDtl.uid %}"
+                                        class="badge bg-dark text-white"
+                                        target="_blank">{{ormModelDtl.date_trans|date:'d/m/Y'}}&nbsp;</a>
+                                </td>
+                                <td>{{ormModelDtl.document_no}}</td>
+                                <td>{{ormModelDtl.document_type}}</td>
+                                <td>{{ormModelDtl.remarks}}</td>
+                                <td>{{ormModelDtl.account_code}}</td>
+                                <td>{{ormModelDtl.party_code}}</td>
+                                <td>{{ormModelDtl.document_reference}}</td>
+                                <td style="text-align:right">
+                                    {% if ormModelDtl.amount_forex < 0 %} <font color="red">
+                                        {% else %}
+                                        <font color="green">
+                                            {% endif %}
+                                            {{ormModelDtl.amount_forex|floatformat:2}}
+                                        </font>
+                                </td>
+                            </tr>
+                            {% endif %}
+                            {% endfor %}
+
+                            {% else %}
+                                {% if rendertype == 'trialbal'%}
+                                    <tr>
+                                        <td colspan="5" style="text-align:center">
+                                            <font color="maroon"> <b> No Transactions Found </b></font>
+                                        </td>
+                                    </tr>
+                                {% elif rendertype == 'subscard'%}
+                                    <tr>
+                                        <td colspan="9" style="text-align:center">
+                                            <font color="maroon"> <b> No Records Found </b></font>
+                                        </td>
+                                    </tr>
+                                {% else %}
+                                    <tr>
+                                        <td colspan="9" style="text-align:center">
+                                            <font color="maroon"> <b> No Transactions Found </b></font>
+                                        </td>
+                                    </tr>
+                                {% endif %}
+                            {% endif %}
+                            {% if rendertype == 'trialbal'%}
+                            <tr>
+                                <td>&nbsp;</td>
+                                <td>&nbsp;</td>
+                                <td><b>Total</b></td>
+                                <td style="text-align: right;">{{ormHdr.displayamtdb|floatformat:2}}</td>
+                                <td style="text-align: right;">{{ormHdr.displayamtcr|floatformat:2}}</td>
+
+                               
+                            </tr>
+                            {% elif rendertype == 'subscard'%}
+                            {% else %}
+                            <tr>
+                                <td colspan="7">&nbsp;</td>
+                                <td><b>Total</b></td>
+                                <td style="text-align:right">
+                                    <font color="{{ormHdr.displayamtColor}}">
+                                        {{ormHdr.displayamt|floatformat:2}}
+                                    </font>
+                                </td>
+                            </tr>
+                            {% endif %}
+                        </table>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

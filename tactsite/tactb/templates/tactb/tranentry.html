@@ -1,0 +1,468 @@
+<script language="JavaScript">
+    function validform()
+    {
+
+        if (document.all.document_no.value == '')
+        {
+            alert('Document Number Cannot Be Blank')
+            return false;
+        }
+        if (document.all.party_code.value == '')
+        {
+            alert('Party Code Cannot Be Blank')
+            return false;
+        }
+        if (document.all.ex_rate.value == '')
+        {
+            document.all.ex_rate.value = 1;
+        }
+
+      
+
+        doctype =document.all.document_type.value;
+       
+        if (doctype == 'OPENBAL' || doctype == 'ACCTJRNL')
+        {
+            
+            if (Number(document.all.balanceAmt.value) !=0)
+            {
+                alert('Credit And Debit Amount Must Tally')
+                return false;
+            }
+            if (Number(document.all.debittotal.value) ==0 && Number(document.all.credittotal.value) ==0)
+            {
+                alert('Document Cannot Have Zero Amount')
+                return false;
+            }
+        } 
+        else
+        {
+            if (Number(document.all.hdrAccount.value) == '')
+            {
+                if (doctype == 'CASHRCPT')
+                {
+                    alert('Debit Account Cannot be Blank')
+                }
+                else
+                {
+                    alert('Credit Account Cannot be Blank')
+                }
+                return false;
+            }
+            if (Number(document.all.amount_forex.value) ==0)
+            {
+                alert('Document Cannot Have Zero Amount')
+                return false;
+            }
+        }
+       
+       
+        for (i = 1; i<= Number(document.all.noofrows.value);i++)
+        {
+            act = eval('document.all.actNumber_'+i)
+            remarks = eval('document.all.remarks_'+i)
+            flgchkact = false
+            if (doctype == 'OPENBAL' || doctype == 'ACCTJRNL')
+            {
+                cramt = eval('document.all.tranLineCreditAmount_'+i)
+                dramt = eval('document.all.tranLineDebitAmount_'+i)
+                if (Number(cramt.value) != 0 || Number(dramt.value)!=0)
+                {
+                    flgchkact = true
+                }
+
+            } 
+            else
+            {
+                linamt = eval('document.all.amount_forex_'+i)
+                if (Number(linamt.value) != 0)
+                {
+                    flgchkact = true
+                }
+            }
+
+            if (flgchkact)
+            {
+                if (act.value == '')
+                {
+                    alert('Account Number Cannot Be Blank on Line '+i)
+                    return false;
+                }
+                if (remarks.value == '')
+                {
+                    alert('Narration Cannot Be Blank on Line '+i)
+                    return false;
+                }
+            }
+        }
+        return handle_form_submission()
+    }
+    function copyPrev(row)
+    {
+        if (row == 1) return;
+        currrow = eval('document.all.remarks_'+row)
+        if (currrow.value == '')
+        {
+            currrow.value = eval('document.all.remarks_'+(row-1)).value ;
+        }
+    }
+    function delCheck(chk,row)
+    {
+        rowtr = eval('document.all.rowtr'+row)
+        if (chk.checked)
+        {
+            rowtr.style.background = '#cccccc'
+        }
+        else
+        {
+            rowtr.style.background = '#f5f5f5'
+        }
+        computeTotal()
+    }
+    function toggleAmount(typ,row)
+    {
+        debitamount =  eval('document.all.tranLineDebitAmount_'+row);
+        creditamount =  eval('document.all.tranLineCreditAmount_'+row);
+        if (typ == 'cr')
+        {
+            debitamount.value = 0.00
+        }
+        else
+        {
+            creditamount.value = 0.00
+        }
+    }
+    function computeTotal()
+    {
+        var debittotal =0;
+        var credittotal =0;
+        var doctotal =0;
+        flgtotamount = false;
+        if (document.all.document_type.value == "CASHRCPT" ||document.all.document_type.value == 'CASHPAYM')
+        {
+            flgtotamount = true;
+        }
+        for (i=1;i<=Number(document.all.noofrows.value);i++)
+        {
+            delchk = eval('document.all.trandelchk_'+i)
+            if (flgtotamount)
+            {
+                docamount = Number(eval('document.all.amount_forex_'+i).value)
+                
+                if (!delchk.checked)
+                { 
+                    doctotal = doctotal + docamount;
+                }
+            }
+            else
+            {
+                debitamount = Number(eval('document.all.tranLineDebitAmount_'+i).value)
+                creditamount = Number(eval('document.all.tranLineCreditAmount_'+i).value)
+                if (!delchk.checked)
+                { 
+                    debittotal = debittotal + debitamount;
+                    credittotal = credittotal + creditamount;
+                }
+            }
+        }
+        if (flgtotamount)
+        {
+            amount_forex = document.all.amount_forex;
+            amount_local = document.all.amount_local;
+            amount_forex.value = doctotal.toFixed(2);
+            amount_local.value = (doctotal * Number(document.all.ex_rate.value)).toFixed(2);
+        }
+        else
+        {
+            objdebittotal = document.all.debittotal;
+            objdcredittotal = document.all.credittotal;
+            objbalanceAmt = document.all.balanceAmt;
+            objdebittotal.value = debittotal.toFixed(2);
+            objdcredittotal.value = credittotal.toFixed(2);
+            objbalanceAmt.value = (credittotal - debittotal).toFixed(2); 
+        }
+    }
+</script>
+<div class="col-md-8">
+    <div class="card shadow">
+        <div class="card-header  bg-secondary text-white">
+            <div class="card-title">
+                <h5>
+                {{ormModelHdr.transDesc}} >>> {{ormModelHdr.transmode|upper}}
+                </h5>
+            </div>
+        </div>
+        <div class="card-body">
+            <form method="POST" enctype="multipart/form-data" onsubmit="return validform()">
+                {% csrf_token %}
+                <div class="row">
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            <label for="document_type">Transaction Type</label>
+                            <input id="document_type" name="document_type" type="text" class="form-control" readonly
+                                value="{{rendertype|upper}}">
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            <label for="document_no">Document Number</label>
+                            <input id="document_no" name="document_no" type="text" class="form-control" value="{{ormModelHdr.nextNumber}}">
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            <label for="date_trans">Transaction Date</label>
+                            <input id="date_trans" name="date_trans" type="date" class="form-control" value="{{ormModelHdr.currDate|date:'Y-m-d'}}">
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            <label for="document_reference">Reference</label>
+                            <input id="document_reference" name="document_reference" type="text" class="form-control" value="{{ormmodel.Reference}}">
+                        </div>
+                    </div>
+                   
+                </div>
+                <div class="row">
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            <label for="additional_reference">Additional Reference</label>
+                            <input id="additional_reference" name="additional_reference" type="text" class="form-control" value="{{ormModelHdr.addnlReference}}">
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            <label for="currency_code">Currency</label>
+                            <input id="currency_code" name="currency_code" type="text" class="form-control"
+                                value="{{ormModelHdr.currency}}">
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            <label for="ex_rate">Rate</label>
+                            <input id="ex_rate" name="ex_rate" type="text" style="text-align:right" class="form-control"
+                                value="{{ormModelHdr.tranRate}}">
+                        </div>
+                    </div>
+                    {% if rendertype == 'cashrcpt' or rendertype == 'cashpaym' %}
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label for="hdrAccount">{{ormModelHdr.hdrAccountLabel}}</label>
+                                <Select id="hdrAccount" name="hdrAccount" class="form-control">
+                                    <option value=""></option>
+                                    {% for act in ormModelHdr.ormcoa %}
+                                        {% if act.accountCode == ormModelHdr.act_code %}
+                                            <option value="{{act.accountCode}}" selected >{{act.accountCode}}[{{act.accountName}}]</option>
+                                        {% else %}
+                                            <option value="{{act.accountCode}}">{{act.accountCode}}[{{act.accountName}}]</option>
+                                        {% endif%}
+                                    {% endfor %}
+                                </Select>
+                            </div>
+                        </div>
+                    {% endif %}
+                </div>
+                <div class="row">
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            <label for="hdrAccount">Party Code</label>
+                            <Select id="party_code" name="party_code" class="form-control">
+                                <option value=""></option>
+                                {% for cust in ormModelHdr.ormCust %}
+                                    {% if cust.partyCode == ormModelHdr.party_code %}
+                                        <option value="{{cust.partyCode}}" selected>{{cust.partyCode}} [{{cust.partyName}}]</option>
+                                    {% else %}
+                                        <option value="{{cust.partyCode}}">{{cust.partyCode}} [{{cust.partyName}}]</option>
+                                    {% endif %}
+                                {% endfor %}
+                            </Select>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="form-group">
+                             <label for="remarks">Narration</label>
+                             <textarea id="remarks" name="remarks" class="form-control">{{ormModelHdr.narration}}</textarea>
+                         </div>
+                    </div>
+                </div>
+                {% if rendertype != 'cashrcpt' and rendertype != 'cashpaym' %}
+                    <div class="row">
+                        <div class="col-md-3">
+                            <div class="form-group">&nbsp;</div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label for="credittotal">Credit Total</label>
+                                <input id="credittotal" name="credittotal" type="number" step=".01" style="text-align:right;background: lightgreen;" readonly class="form-control" value="0.00">
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label for="debittotal">Debit Total</label>
+                                <input id="debittotal" name="debittotal" type="number" step=".01" style="text-align:right;background: yellow;" readonly class="form-control" value="0.00">
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label for="balanceAmt">Balance</label>
+                                <input id="balanceAmt" name="balanceAmt" type="number" step=".01" style="text-align:right;background: orange;"  readonly class="form-control" value="0.00">
+                            </div>
+                        </div>
+                    </div>
+                {% endif %}
+                
+
+                <hr/>
+                <div class="row  bg-light">
+                    <div class="col-md-12">
+                        <ul class="nav nav-pills nav-fill" id="myTab" role="tablist">
+                            <li class="nav-item" role="presentation">
+                              <button class="nav-link active" id="line-tab" data-bs-toggle="tab" data-bs-target="#line" type="button" role="tab" aria-controls="line" aria-selected="true">Line Details</button>
+                            </li>
+                            <li class="nav-item" role="presentation">
+                              <button class="nav-link" id="notes-tab" data-bs-toggle="tab" data-bs-target="#notes" type="button" role="tab" aria-controls="notes" aria-selected="false">Internal Notes</button>
+                            </li>
+                          </ul>
+                          <div class="tab-content nopadding" id="myTabContent">
+                            <div class="tab-pane fade show active" id="line" role="tabpanel" aria-labelledby="line-tab">
+                                <div class="row nopadding">
+                                    <div class="col-md-12">
+                                        <table class="table  table-sm" style="padding: 0px;margin: 0px;">
+                                            <tr>
+                                                <th>&nbsp;</th>
+                                                <th><font color='red'><i class="fa-solid fa-trash-can"></i></font></th>
+                                                <th>Account</th>
+                                                <th>Narration</th>
+                                                <th>Reference</th>
+                                                {% if rendertype == 'cashrcpt' or rendertype == 'cashpaym' %}
+                                                    <th>Amount</th>
+                                                {% else %}
+                                                    <th>Credit Amount</th>
+                                                    <th>Debit Amount</th>
+                                                {%endif%}
+                                            </tr>
+                                            {% for ormModelDtl in ormModelDtlAll %}
+                                                {% with i=forloop.counter %}
+                                                    <tr id="rowtr{{i}}" style="background:#f5f5f5">
+                                                        <td>
+                                                            {{i}}
+                                                        </td>
+                                                        <td>
+                                                            <input class="form-check-input" style='background:#f5f5f5' type="checkbox" value="" onclick="delCheck(this,{{i}})" name="trandelchk_{{i}}" id="trandelchk_{{i}}">
+                                                        </td>
+                                                        <td>
+                                                            <Select id="actNumber_{{i}}" name="actNumber_{{i}}" class="form-control">
+                                                                <option value=""></option>
+                                                                {% for act in ormModelHdr.ormcoa %}
+                                                                    {% if act.accountCode == ormModelDtl.account_code %}
+                                                                        <option value="{{act.accountCode}}" selected >{{act.accountCode}}[{{act.accountName}}]</option>
+                                                                    {% else %}
+                                                                        <option value="{{act.accountCode}}">{{act.accountCode}}[{{act.accountName}}]</option>
+                                                                    {% endif %}
+                                                                {% endfor %}
+                                                            </Select>
+                                                            <input id="line_uid_{{i}}" name="line_uid_{{i}}" type="hidden" value="{{ormModelDtl.line_uid}}">
+                                                            <input id="item_code_{{i}}" name="item_code_{{i}}" type="hidden" value="{{ormModelDtl.item_code}}">
+                                                            <input id="item_description_{{i}}" name="item_description_{{i}}" type="hidden" value="{{ormModelDtl.item_description}}">
+                                                            <input id="quantity_{{i}}" name="quantity_{{i}}" type="hidden" value="{{ormModelDtl.quantity}}">
+                                                            <input id="bal_quantity_{{i}}" name="bal_quantity_{{i}}" type="hidden" value="{{ormModelDtl.bal_quantity}}">
+                                                            <input id="unit_price_{{i}}" name="unit_price_{{i}}" type="hidden" value="{{ormModelDtl.unit_price}}">
+                                                            <input id="stock_uom_{{i}}" name="stock_uom_{{i}}" type="hidden" value="{{ormModelDtl.stock_uom}}">
+                                                            <input id="selling_uom_{{i}}" name="selling_uom_{{i}}" type="hidden" value="{{ormModelDtl.selling_uom}}">
+                                                            <input id="amount_local_{{i}}" name="amount_local_{{i}}" type="hidden" value="{{ormModelDtl.amount_local}}">
+                                                            <input id="taxable_yn_{{i}}" name="taxable_yn_{{i}}" type="hidden" value="{{ormModelDtl.taxable_yn}}">
+                                                            <input id="tax_code1_{{i}}" name="tax_code1_{{i}}" type="hidden" value="{{ormModelDtl.tax_code1}}">
+                                                            <input id="tax_code2_{{i}}" name="tax_code2_{{i}}" type="hidden" value="{{ormModelDtl.tax_code2}}">
+                                                            <input id="tax_code3_{{i}}" name="tax_code3_{{i}}" type="hidden" value="{{ormModelDtl.tax_code3}}">
+                                                            <input id="tax_pecent1_{{i}}" name="tax_pecent1_{{i}}" type="hidden" value="{{ormModelDtl.tax_pecent1}}">
+                                                            <input id="tax_pecent2_{{i}}" name="tax_pecent2_{{i}}" type="hidden" value="{{ormModelDtl.tax_pecent2}}">
+                                                            <input id="tax_pecent3_{{i}}" name="tax_pecent3_{{i}}" type="hidden" value="{{ormModelDtl.tax_pecent3}}">
+                                                            <input id="discount_percent_{{i}}" name="discount_percent_{{i}}" type="hidden" value="{{ormModelDtl.discount_percent}}">
+                                                            <input id="location_code_{{i}}" name="location_code_{{i}}" type="hidden" value="{{ormModelDtl.location_code}}">
+                                                            <input id="db_cr_{{i}}" name="db_cr_{{i}}" type="hidden" value="{{ormModelDtl.db_cr}}">
+                                                            <input id="trx_sign_{{i}}" name="trx_sign_{{i}}" type="hidden" value="{{ormModelDtl.trx_sign}}">
+                                                            <input id="ref_document_typ_{{i}}" name="ref_document_typ_{{i}}" type="hidden" value="{{ormModelDtl.ref_document_typ}}">
+                                                            <input id="tag_header_yn_{{i}}" name="tag_header_yn_{{i}}" type="hidden" value="{{ormModelDtl.tag_header_yn}}">
+                                                            <input id="tax_amount_forex1_{{i}}" name="tax_amount_forex1_{{i}}" type="hidden" value="{{ormModelDtl.tax_amount_forex1}}">
+                                                            <input id="tax_amount_forex2_{{i}}" name="tax_amount_forex2_{{i}}" type="hidden" value="{{ormModelDtl.tax_amount_forex2}}">
+                                                            <input id="tax_amount_forex3_{{i}}" name="tax_amount_forex3_{{i}}" type="hidden" value="{{ormModelDtl.tax_amount_forex3}}">
+                                                            <input id="tax_amount_local1_{{i}}" name="tax_amount_local1_{{i}}" type="hidden" value="{{ormModelDtl.tax_amount_local1}}">
+                                                            <input id="tax_amount_local2_{{i}}" name="tax_amount_local2_{{i}}" type="hidden" value="{{ormModelDtl.tax_amount_local2}}">
+                                                            <input id="tax_amount_local3_{{i}}" name="tax_amount_local3_{{i}}" type="hidden" value="{{ormModelDtl.tax_amount_local3}}">
+                                                            <input id="extnamount_forex_{{i}}" name="extnamount_forex_{{i}}" type="hidden" value="{{ormModelDtl.extnamount_forex}}">
+                                                            <input id="extnamount_local_{{i}}" name="extnamount_local_{{i}}" type="hidden" value="{{ormModelDtl.extnamount_local}}">
+
+                                                        </td>
+                                                        <td>
+                                                            <input id="remarks_{{i}}" name="remarks_{{i}}" type="text" class="form-control" onfocus="copyPrev({{i}})" value="{{ormModelDtl.remarks}}">
+                                                        </td>
+                                                    
+                                                        <td>
+                                                            <input id="ref_document_no_{{i}}" name="ref_document_no_{{i}}" type="text" class="form-control"  value="{{ormModelDtl.ref_document_no}}">
+                                                        </td>
+                                                        {% if rendertype == 'cashrcpt' or rendertype == 'cashpaym' %}
+                                                            <td>
+                                                                <input id="amount_forex_{{i}}" name="amount_forex_{{i}}" type="number" step=".01" style="text-align: right;"  onblur="computeTotal()" class="form-control" value="{{ormModelDtl.amount_forex}}">
+                                                            </td>
+                                                        {% else %}
+                                                            <td>
+                                                                <input id="tranLineCreditAmount_{{i}}" name="tranLineCreditAmount_{{i}}" type="number" step=".01" style="text-align: right;" onblur="computeTotal()" class="form-control" value="{{ormModelDtl.amount_forex_cr}}">
+                                                            </td>
+                                                            <td>
+                                                                <input id="tranLineDebitAmount_{{i}}" name="tranLineDebitAmount_{{i}}" type="number" step=".01" style="text-align: right;"  onblur="computeTotal()" class="form-control" value="{{ormModelDtl.amount_forex_db}}">
+                                                            </td>
+                                                        {% endif %}
+                                                    
+                                                    </tr>
+                                                {% endwith %}
+                                            {% endfor %}
+                                            {% if rendertype == 'cashrcpt' or rendertype == 'cashpaym' %}
+                                                <tr style="background:#f5f5f5">
+                                                    <td>&nbsp;</td>
+                                                    <td>&nbsp;</td>
+                                                    <td>&nbsp;</td>
+                                                    <td>&nbsp;</td>
+                                                    <td><b>Total</b></td>
+                                                    <td>
+                                                        <input id="amount_forex" name="amount_forex" type="number" readonly style="text-align: right;background: yellow;"   class="form-control" value="0.00">
+                                                        <input id="amount_local" name="amount_local" type="hidden" readonly style="text-align: right;background: yellow;"   class="form-control" value="0.00">
+                                                    </td>
+                                                </tr>
+                                            {% endif %}
+                                        </table>
+                                    </div>
+                                </div>
+
+                            </div>
+                            <div class="tab-pane fade" id="notes" role="tabpanel" aria-labelledby="notes-tab">
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="form-group">
+                                             <label for="tranDtlNarration">Narration</label>
+                                             <textarea id="tranDtlNarration" name="tranDtlNarration" class="form-control">tranDtlNarration</textarea>
+                                         </div>
+                                    </div>
+                                </div>
+                            </div>
+                          </div>
+                    </div>
+                </div>
+                
+                {% include 'tactb/buttons.html' %}
+                <input type="hidden" name="noofrows" id="noofrows" value="{{ormModelHdr.totalrows}}">
+                <input type="hidden" name="transmode" id="transmode" value="{{ormModelHdr.transmode}}">
+                <input type="hidden" name="uuid" id="uuid" value="{{ormModelHdr.uuid}}">
+            </form>
+        </div>
+    </div>
+</div>
+<div class="col-md-4">
+    {% with listname=ormModelHdr.transDesc %}
+        {% include 'tactb/lister.html' %}
+    {% endwith %}
+</div>
+<script>
+    computeTotal()
+</script>

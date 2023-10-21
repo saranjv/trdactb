@@ -1,0 +1,67 @@
+
+<div class="col-md-12">
+    <div class="card shadow" style="background-color: #ECEDEE;">
+        <div class="card-header {{tactUtils.themestring}} " >
+            <div class="card-title" >
+                <i class="fa-solid fa-book"></i>&nbsp;<b>Transactions</b>
+            </div>
+        </div>
+        <div class="card-body">
+            {% for itm in tactUtils.transMenu %}
+            {% if showcheck == True %}
+                <ul class="list-group">
+                    <div class="list-group-item list-group-item-action"><input type="checkbox" id="{{itm.menukey}}"  value="{{itm.menukey}}"/>&nbsp;&nbsp;{{itm.menudesc}}</div>
+                </ul>
+            {% else %}
+                <ul class="list-group">
+                    <a href="trans/{{itm.menukey}}" class="list-group-item list-group-item-action">{{itm.menudesc}}</a>
+                </ul>
+            {% endif %}
+            {% endfor %}
+        </div>
+    </div>
+</div>
+<div class="col-md-12">
+    <div class="card shadow" style="background-color: #ECEDEE;">
+        <div class="card-header {{tactUtils.themestring}} ">
+            <div class="card-title">
+                <i class="fa-solid fa-print"></i>&nbsp;<b>Reports</b>
+            </div>
+        </div>
+        <div class="card-body">
+            {% for itm in tactUtils.rptsMenu %}
+                {% if showcheck == True %}
+                    <ul class="list-group">
+                        <div class="list-group-item list-group-item-action"><input type="checkbox" id="{{itm.menukey}}"  value="{{itm.menukey}}"/>&nbsp;&nbsp;{{itm.menudesc}}</div>
+                    </ul>
+                {% else %}
+                    <ul class="list-group">
+                        <a href="rpts/{{itm.menukey}}" class="list-group-item list-group-item-action">{{itm.menudesc}}</a>
+                    </ul>
+                {% endif %}
+            {% endfor %}
+        </div>
+    </div>
+</div>
+<div class="col-md-12">
+    <div class="card shadow"  style="background-color: #ECEDEE;">
+        <div class="card-header {{tactUtils.themestring}} ">
+            <div class="card-title">
+                <i class="fa-solid fa-gear"></i>&nbsp;<b>Portfolio</b>
+            </div>
+        </div>
+        <div class="card-body">
+            {% for itm in tactUtils.companyMenu %}
+                {% if showcheck == True %}
+                    <ul class="list-group">
+                        <div class="list-group-item list-group-item-action"><input type="checkbox" id="{{itm.menukey}}" value="{{itm.menukey}}"/>&nbsp;&nbsp;{{itm.menudesc}}</div>
+                    </ul>
+                {% else %}
+                    <ul class="list-group">
+                        <a href="mast/{{itm.menukey}}" class="list-group-item list-group-item-action">{{itm.menudesc}}</a>
+                    </ul>
+                {% endif %}
+            {% endfor %}
+        </div>
+    </div>
+</div>

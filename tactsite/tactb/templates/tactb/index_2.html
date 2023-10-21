@@ -1,0 +1,80 @@
+{% extends 'tactb/base.html'%}
+{% block body %}
+<div>
+    {% if user.is_authenticated %}
+        <div class="row">
+            <div class="col-md-3">
+                <div class="row">
+                    {% with showcheck=False %}
+                        {% include 'tactb/menu.html' %}
+                    {% endwith %}
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="card shadow">
+                            <div class="card-header {{tactUtils.themestring}}">
+                                <div class="card_header">
+                                    <b>Buy & Sell</b>
+                                </div>
+                            </div>
+                            <div class="card-body">
+                                <canvas id="myfunds" height="100" width="100"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="card shadow">
+                            <div class="card-header {{tactUtils.themestring}} ">
+                                <div class="card_header text-black">
+                                    <b>Segments</b>
+                                </div>
+                            </div>
+                            <div class="card-body">
+                                <canvas id="mysegments" height="100" width="100"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div><br />
+                <div class="row">
+                    {% with listname='Recent Transactions' %}
+                        {% include 'tactb/lister.html' %}
+                    {% endwith %}
+                    
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="col-md-12">
+                    <div class="card shadow">
+                        <div class="card-header {{tactUtils.themestring}} ">
+                            <div class="card-title">
+                                <b>Reminders</b>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <ul class="list-group">
+                                <li class="list-group-item list-group-item-action">Add Idea to Watchlist</li>
+                                <li class="list-group-item list-group-item-action">Tata Elxsi Results</li>
+                                <li class="list-group-item list-group-item-action">HDFC Merger</li>
+                                <li class="list-group-item list-group-item-action">IPO Listing</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    {%else%}
+        <div class="row">
+            <div class="col-md-3">
+                <div class="row">&nbsp;
+                </div>
+            </div>
+            <div class="col-md-6">&nbsp;
+            </div>
+            <div class="col-md-3">&nbsp;
+            </div>
+        </div>
+    {%endif%}
+</div>
+{% endblock %}

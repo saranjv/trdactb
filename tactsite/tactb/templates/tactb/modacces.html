@@ -1,0 +1,22 @@
+<div class="col-md-12">
+    <div class="card shadow">
+        <div class="card-header  {{tactUtils.themestring}}">
+            <div class="card-title">
+                <div class="row">
+                    <div class="col-md-6">
+                        <h5>Module Access</h5>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="card-body">
+            <form method="POST" onsubmit="return handle_form_submission()">
+                {% csrf_token %}
+                {% with showcheck=True %}
+                    {% include 'tactb/menu.html' %}
+                {% endwith %}
+                {% include 'tactb/buttons.html' %}
+            </form>
+        </div>
+    </div>
+</div>

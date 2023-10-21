@@ -1,0 +1,40 @@
+<div class="col-md-12">
+    <div class="card shadow">
+        <div class="card-header  bg-success text-white">
+            <div class="card-title">
+                <div class="row">
+                    <div class="col-md-6">
+                        <h5>Auto Number</h5>
+                    </div>
+                    <div class="col-md-6">
+                        <a href="{% url 'master' rendertype %}" class="btn btn-warning">New</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="card-body">
+            <form method="POST" enctype="multipart/form-data" onsubmit="return handle_form_submission()">
+                {% csrf_token %}
+                <input type="hidden" name="items" id="items">
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="tranType">Transaction Type</label>
+                            <input id="tranType" name="tranType" required type="text" class="form-control" value="{{ormmodel.tranType}}">
+                        </div>
+                        <div class="form-group">
+                            <label for="prefix">Prefix</label>
+                            <input id="prefix" name="prefix" required type="text" class="form-control" value="{{ormmodel.prefix}}">
+                        </div>
+                        <div class="form-group">
+                            <label for="autonum">Auto Number</label>
+                            <input id="autonum" name="autonum" style="text-align: right;" required type="number" class="form-control" value="{{ormmodel.autonum}}">
+                        </div>
+                    </div>
+                </div>
+                
+                {% include 'tactb/buttons.html' %}
+            </form>
+        </div>
+    </div>
+</div>

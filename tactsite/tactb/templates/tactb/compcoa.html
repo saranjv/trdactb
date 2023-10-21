@@ -1,0 +1,61 @@
+<div class="col-md-12">
+    <div class="card shadow">
+        <div class="card-header  {{tactUtils.themestring}}">
+            <div class="card-title">
+                <div class="row">
+                    <div class="col-md-6">
+                        <h5>Chart of Accounts</h5>
+                    </div>
+                    <div class="col-md-6">
+                        <a href="{% url 'master' rendertype %}" class="btn btn-warning">New</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="card-body">
+            <form method="POST" enctype="multipart/form-data" onsubmit="return handle_form_submission()">
+                {% csrf_token %}
+                <input type="hidden" name="items" id="items">
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="accountCode">Account Code</label>
+                            <input id="accountCode" name="accountCode" required type="text" class="form-control" value="{{ormmodel.accountCode}}">
+                        </div>
+                        <div class="form-group">
+                            <label for="accountName">Name</label>
+                            <input id="accountName" name="accountName" required type="text" class="form-control" value="{{ormmodel.accountName}}">
+                        </div>
+                        <div class="form-group">
+                            <label for="accounttype">Category</label>
+                            <Select id="accountType" name="accountType" class="form-control">
+                                {% if ormmodel.accountType == 'PNL' %}
+                                    <option selected value="PNL">P&L</option>
+                                {% else %}
+                                    <option value="PNL">P&L</option>
+                                {% endif%}
+                                {% if ormmodel.accountType == 'BAL' %}
+                                    <option selected value="BAL">Balance Sheet</option>
+                                {% else %}
+                                    <option value="BAL">Balance Sheet</option>
+                                {% endif%}
+                                {% if ormmodel.accountType == 'AST' %}
+                                    <option selected value="AST">Assets</option>
+                                {% else %}
+                                    <option value="AST">Assets</option>
+                                {% endif%}
+                                {% if ormmodel.accountType == 'LIA' %}
+                                    <option selected value="LIA"Liability</option>
+                                {% else %}
+                                    <option value="LIA">Liability</option>
+                                {% endif%}
+                            </Select>
+                        </div>
+                    </div>
+                </div>
+                
+                {% include 'tactb/buttons.html' %}
+            </form>
+        </div>
+    </div>
+</div>
