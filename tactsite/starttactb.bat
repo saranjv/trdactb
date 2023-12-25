@@ -3,4 +3,3 @@ cd\
 d:
 cd d:\djangoproj\tactb\tactsite
 python manage.py runserver 8000
-@ccounts
